@@ -9,7 +9,7 @@ type Quantity = {
 
 const AddQuantity = ({ value, setValue }: Quantity) => {
   return (
-    <div className="flex mt-auto">
+    <div className="flex">
       <input
         type="number"
         min={1}
@@ -26,20 +26,30 @@ const AddQuantity = ({ value, setValue }: Quantity) => {
   );
 };
 
-const ProductItem = (product: Product) => {
+const ProductsListItem = ({
+  name,
+  brandName,
+  imageUrl,
+  recommendedRetailPrice,
+  recommendedRetailPriceCurrency,
+}: Product) => {
   const [value, setValue] = useState(1);
 
   return (
     <li className="flex flex-col w-60 shadow-lg rounded-xl p-4">
-      <img src={product.imageUrl} alt={`Image of ${product.name}`} />
-      <h1 className="text-lg font-semibold text-gray-900">{product.name}</h1>
-      <h4 className="text-gray-400">{product.brandName}</h4>
-      <div>{`${product.recommendedRetailPrice} ${product.recommendedRetailPriceCurrency}`}</div>
+      <img src={imageUrl} alt={`Image of ${name}`} />
 
-      <AddQuantity value={value} setValue={setValue} />
-      {/* <Button label="Add to cart" /> */}
+      <div className="my-4">
+        <h1 className="text-lg font-semibold text-gray-900">{name}</h1>
+        <h4 className="text-gray-400">{brandName}</h4>
+      </div>
+
+      <div className="mt-auto">
+        <p className="mb-2 font-bold">{`${recommendedRetailPrice} ${recommendedRetailPriceCurrency}`}</p>
+        <AddQuantity value={value} setValue={setValue} />
+      </div>
     </li>
   );
 };
 
-export default ProductItem;
+export default ProductsListItem;
