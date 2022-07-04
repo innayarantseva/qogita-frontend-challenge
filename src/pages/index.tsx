@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Heading from "../components/Heading";
 import Layout from "../components/Layout";
 import Products from "../components/Products";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -24,7 +25,7 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <h1>Products</h1>
+      <Heading text="Products" />
       <Products
         data={data}
         isLoading={isLoading}

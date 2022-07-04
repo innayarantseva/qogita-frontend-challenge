@@ -1,45 +1,36 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { CartItem, Product } from "../../types";
 import ProductsListItem from "../ProductsListItem";
+import {
+  ExistingCartItem,
+  getExistingCartItemByGtin,
+} from "./getExistingCartItemByGtin";
 
-type Props = {
+type ProductsListProps = {
   products: Product[];
   cart: CartItem[];
   setCart: (newCart: CartItem[]) => void;
 };
 
-export type FoundCartItem =
-  | {
-      index: number;
-      cartItem: CartItem;
-    }
-  | undefined;
-
-const getCartItemByGtin = (cart: CartItem[], productGtin: string) => {
-  const cartItemIndex = cart.findIndex((item) => item.gtin === productGtin);
-
-  if (cartItemIndex < 0) {
-    return;
-  }
-
-  return { index: cartItemIndex, cartItem: cart[cartItemIndex] };
-};
-
-const ProductsList: React.FC<Props> = ({ products, cart, setCart }) => {
+const ProductsList: React.FC<ProductsListProps> = ({
+  products,
+  cart,
+  setCart,
+}) => {
   if (products.length === 0) {
     return <p>No products to show 🙅‍♀️</p>;
   }
 
   const addToCart = useCallback(
-    (productGtin: string, cartItem: FoundCartItem) => (quantity: number) => {
+    (gtin: string, existingCartItem: ExistingCartItem) => (quantity: number) => {
       const newCart = Array.from(cart);
-      const newCartItem = { gtin: productGtin, quantity };
+      const newCartItem = { gtin, quantity };
 
-      if (cartItem) {
+      if (existingCartItem) {
         if (quantity === 0) {
-          newCart.splice(cartItem.index, 1);
-        } else if (cartItem.cartItem.quantity !== quantity) {
-          newCart.splice(cartItem.index, 1, newCartItem);
+          newCart.splice(existingCartItem.index, 1);
+        } else if (existingCartItem.quantity !== quantity) {
+          newCart.splice(existingCartItem.index, 1, newCartItem);
         }
       } else {
         newCart.push(newCartItem);
@@ -53,14 +44,14 @@ const ProductsList: React.FC<Props> = ({ products, cart, setCart }) => {
   return (
     <ul className="flex flex-wrap gap-6 justify-center p-4">
       {products.map((product) => {
-        const cartItem = getCartItemByGtin(cart, product.gtin);
+        const existingCartItem = getExistingCartItemByGtin(cart, product.gtin);
 
         return (
           <ProductsListItem
             key={product.gtin}
+            amountInCart={existingCartItem?.quantity}
+            addToCart={addToCart(product.gtin, existingCartItem)}
             {...product}
-            currentCartItem={cartItem}
-            addToCart={addToCart(product.gtin, cartItem)}
           />
         );
       })}

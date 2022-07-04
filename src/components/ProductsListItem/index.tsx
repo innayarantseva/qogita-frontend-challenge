@@ -1,68 +1,22 @@
 import { useState } from "react";
 import { Product } from "../../types";
-import Button from "../Button";
-import { FoundCartItem } from "../ProductsList";
+import AddQuantity from "./AddQuantity";
 
-type Quantity = {
-  value: number;
-  setValue: (newValue: number) => void;
-  isAdded?: boolean;
+type ProductsListItemProps = Product & {
+  amountInCart?: number;
   addToCart: (quantity: number) => void;
 };
 
-const AddQuantity = ({ value, setValue, isAdded, addToCart }: Quantity) => {
-  return (
-    <div className="flex">
-      <input
-        type="number"
-        min={1}
-        value={value}
-        onChange={({ target }) => {
-          if (Number(target.value) >= 1) {
-            setValue(Number(target.value));
-
-            // if the product was already added,
-            // we are increasing a number of products in cart when changing number in input
-            if (isAdded) {
-              addToCart(Number(target.value));
-            }
-          }
-        }}
-        className={`w-20 border rounded-l-md pl-4 ${
-          isAdded ? "border-purple-500 hover:border-purple-600" : ""
-        }`}
-      />
-      <Button
-        label={isAdded ? "In Cart" : "Add to cart"}
-        disabled={value < 1}
-        className={`rounded-l-none border-l-0 w-full ${
-          isAdded
-            ? "bg-purple-500 border-transparent hover:bg-purple-600 text-white"
-            : ""
-        }`}
-        onClick={() => addToCart(value)}
-      />
-
-      {isAdded && (
-        <Button label="X" className="ml-2" onClick={() => addToCart(0)} />
-      )}
-    </div>
-  );
-};
-
-const ProductsListItem = ({
+const ProductsListItem: React.FC<ProductsListItemProps> = ({
   name,
   brandName,
   imageUrl,
   recommendedRetailPrice,
   recommendedRetailPriceCurrency,
-  currentCartItem,
+  amountInCart,
   addToCart,
-}: Product & {
-  currentCartItem?: FoundCartItem;
-  addToCart: (quantity: number) => void;
 }) => {
-  const [value, setValue] = useState(currentCartItem?.cartItem.quantity || 1);
+  const [value, setValue] = useState(amountInCart || 1);
 
   return (
     <li className="flex flex-col w-72 shadow-lg rounded-xl p-4">
@@ -78,7 +32,7 @@ const ProductsListItem = ({
         <AddQuantity
           value={value}
           setValue={setValue}
-          isAdded={Boolean(currentCartItem)}
+          isAdded={Boolean(amountInCart)}
           addToCart={addToCart}
         />
       </div>

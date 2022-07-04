@@ -1,8 +1,9 @@
-import Layout from '../../components/Layout';
+import Heading from "../../components/Heading";
+import Layout from "../../components/Layout";
 
 const CartPage = () => (
   <Layout>
-    <h1>Your Cart</h1>
+    <Heading text="Your Cart" />
   </Layout>
 );
 
