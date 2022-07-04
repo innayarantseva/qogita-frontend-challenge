@@ -6,6 +6,30 @@ import {
   getExistingCartItemByGtin,
 } from "./getExistingCartItemByGtin";
 
+export const updateCart =
+  (
+    cart: CartItem[],
+    setCart: (cart: CartItem[]) => void,
+    gtin: string,
+    existingCartItem: ExistingCartItem
+  ) =>
+  (quantity: number) => {
+    const newCart = Array.from(cart);
+    const newCartItem = { gtin, quantity };
+
+    if (existingCartItem) {
+      if (quantity === 0) {
+        newCart.splice(existingCartItem.index, 1);
+      } else if (existingCartItem.quantity !== quantity) {
+        newCart.splice(existingCartItem.index, 1, newCartItem);
+      }
+    } else {
+      newCart.push(newCartItem);
+    }
+
+    setCart(newCart);
+  };
+
 type ProductsListProps = {
   products: Product[];
   cart: CartItem[];
@@ -22,23 +46,9 @@ const ProductsList: React.FC<ProductsListProps> = ({
   }
 
   const addToCart = useCallback(
-    (gtin: string, existingCartItem: ExistingCartItem) => (quantity: number) => {
-      const newCart = Array.from(cart);
-      const newCartItem = { gtin, quantity };
-
-      if (existingCartItem) {
-        if (quantity === 0) {
-          newCart.splice(existingCartItem.index, 1);
-        } else if (existingCartItem.quantity !== quantity) {
-          newCart.splice(existingCartItem.index, 1, newCartItem);
-        }
-      } else {
-        newCart.push(newCartItem);
-      }
-
-      setCart(newCart);
-    },
-    [cart]
+    (gtin: string, existingCartItem: ExistingCartItem) =>
+      updateCart(cart, setCart, gtin, existingCartItem),
+    [cart, setCart]
   );
 
   return (

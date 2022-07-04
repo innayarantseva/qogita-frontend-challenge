@@ -41,7 +41,7 @@ const AddQuantity: React.FC<AddQuantityProps> = ({
   }, [addToCart, setValue]);
 
   return (
-    <div className="flex">
+    <div className="flex w-64">
       <input
         type="number"
         min={1}
