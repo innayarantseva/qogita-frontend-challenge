@@ -1,21 +1,17 @@
 import { useCallback } from "react";
 import { CartItem, Product } from "../../types";
 import ProductsListItem from "../ProductsListItem";
-import {
-  ExistingCartItem,
-  getExistingCartItemByGtin,
-} from "./getExistingCartItemByGtin";
+import { getExistingCartItemByGtin } from "./getExistingCartItemByGtin";
+
+export type AddItemToCart = (gtin: string) => (quantity: number) => void;
 
 export const updateCart =
-  (
-    cart: CartItem[],
-    setCart: (cart: CartItem[]) => void,
-    gtin: string,
-    existingCartItem: ExistingCartItem
-  ) =>
+  (cart: CartItem[], setCart: (cart: CartItem[]) => void, gtin: string) =>
   (quantity: number) => {
     const newCart = Array.from(cart);
     const newCartItem = { gtin, quantity };
+
+    const existingCartItem = getExistingCartItemByGtin(cart, gtin);
 
     if (existingCartItem) {
       if (quantity === 0) {
@@ -46,8 +42,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
   }
 
   const addToCart = useCallback(
-    (gtin: string, existingCartItem: ExistingCartItem) =>
-      updateCart(cart, setCart, gtin, existingCartItem),
+    (gtin: string) => updateCart(cart, setCart, gtin),
     [cart, setCart]
   );
 
@@ -60,7 +55,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
           <ProductsListItem
             key={product.gtin}
             amountInCart={existingCartItem?.quantity}
-            addToCart={addToCart(product.gtin, existingCartItem)}
+            addToCart={addToCart}
             {...product}
           />
         );

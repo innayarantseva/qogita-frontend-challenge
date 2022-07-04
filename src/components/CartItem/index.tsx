@@ -1,10 +1,11 @@
 import { Product } from "../../types";
+import { AddItemToCart } from "../ProductsList";
 import ProductsListItem from "../ProductsListItem";
 
 type CartItemProps = {
   quantity: number;
-  addToCart: (quantity: number) => void;
-  item: Product | undefined;
+  addToCart: AddItemToCart;
+  item: Product;
 };
 
 const CartItem: React.FC<CartItemProps> = ({ quantity, addToCart, item }) => {

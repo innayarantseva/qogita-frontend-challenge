@@ -4,12 +4,13 @@ import AddQuantity from "./AddQuantity";
 
 type ProductsListItemProps = Product & {
   amountInCart?: number;
-  addToCart: (quantity: number) => void;
+  addToCart: (gtin: string) => (quantity: number) => void;
   vertical?: boolean;
 };
 
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
   name,
+  gtin,
   brandName,
   imageUrl,
   recommendedRetailPrice,
@@ -48,7 +49,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
             value={value}
             setValue={setValue}
             isAdded={Boolean(amountInCart)}
-            addToCart={addToCart}
+            addToCart={addToCart(gtin)}
           />
         </div>
       </div>
